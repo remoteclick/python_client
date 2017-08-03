@@ -1,0 +1,5 @@
+{
+    "username": "your_username",
+    "password": "your_password",
+    "base_url": "http://api.iotcloud.local/api/"
+}
