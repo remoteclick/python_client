@@ -6,6 +6,7 @@ import requests
 from requests.auth import AuthBase
 
 from iotclient.datanode import DataNode
+from iotclient.datanode_value import DataNodeValue
 
 
 class RequestError(Exception):
@@ -136,6 +137,31 @@ class IOTClient:
             raise RequestError(self.make_error_message(response))
         self.data_nodes.pop(data_node.id)
         return True
+
+    def save_data_node_value(self, data_node_value):
+        if data_node_value.id and isinstance(data_node_value.id, int):
+            logging.debug("updating existing data node value with id: {0}".format(data_node_value.id))
+            self.update_data_node_value(data_node_value)
+
+        if not data_node_value.data_node:
+            raise ValueError("data-node of value cannot be none")
+
+        self.logger.debug("saving data node value..")
+        response = requests.post(self.base_url + "datanodes/{0}/values".format(data_node_value.data_node.id),
+                                 json.dumps(data_node_value.to_dict()),
+                                 auth=OAuth2(self.token))
+
+        if response.status_code != 201:
+            raise RequestError(self.make_error_message(response))
+        saved_data_node_value = DataNodeValue.from_dict(json.loads(response.content))
+        data_node_value.data_node.values[saved_data_node_value.id] = saved_data_node_value
+
+        self.logger.debug("successfully saved value of data-node. received id: {0}".format(saved_data_node_value.id))
+        return saved_data_node_value
+
+    def update_data_node_value(self, data_node_value):
+        # TODO implement
+        pass
 
     def make_error_message(self, response):
         return "api returned status code: {0} with message: {1}".format(response.status_code, response.content)

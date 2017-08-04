@@ -1,3 +1,4 @@
+from iotclient.datanode_value import DataNodeValue
 from iotclient.value_type import ValueType
 
 
@@ -10,6 +11,7 @@ class DataNode:
         self.path = path
         self.href = path
         self.id = None
+        self.values = {}
 
     def from_dict(_dict):
         d = DataNode()
@@ -23,12 +25,17 @@ class DataNode:
         return d
 
     def to_dict(self):
-        _dict = self.__dict__
+        _dict = self.__dict__.copy()
         _dict.pop('id', None)
+        _dict.pop('values', None)
+        _dict.pop('href', None)
         return _dict
 
     def full_name(self):
         return self.path.strip("/") + "/" + self.name
+
+    def new_value(self, value=None, timestamp=None):
+        return DataNodeValue(value=value, timestamp=timestamp, data_node=self)
 
     def __str__(self):
         return self.__dict__.__str__()

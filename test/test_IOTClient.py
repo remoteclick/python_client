@@ -1,4 +1,6 @@
-import json, logging
+import json
+import logging
+import random
 from unittest import TestCase
 
 from iotclient import IOTClient
@@ -63,3 +65,10 @@ class TestIOTClient(TestCase):
         data_node = DataNode("AboutToGetDeleted", ValueType.NUMBER, "Kg", True, "Test")
         data_node = self.client.save_data_node(data_node)
         self.assertTrue(self.client.delete_data_node(data_node))
+
+    def test_save_data_node_value(self):
+        self.client.connect()
+        data_node = self.client.save_data_node(DataNode("Temperature", ValueType.NUMBER, "°C", True, "Controller"))
+        value = data_node.new_value(random.randint(15, 30))
+        response_value = self.client.save_data_node_value(value)
+        self.assertIsNotNone(response_value)
