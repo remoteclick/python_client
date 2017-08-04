@@ -1,8 +1,11 @@
-import json
+import json, logging
 from unittest import TestCase
 
 from iotclient import IOTClient
-from iotclient.datanode import DataNode, ValueType
+from iotclient.datanode import DataNode
+from iotclient.value_type import ValueType
+
+logging.basicConfig(level=logging.DEBUG)
 
 
 class TestIOTClient(TestCase):
@@ -41,9 +44,22 @@ class TestIOTClient(TestCase):
         self.assertEqual(data_node.value_type, ValueType.NUMBER)
         self.assertEqual(data_node.unit, "°C")
         self.assertEqual(data_node.keep_history, True)
-        self.assertEqual(len(self.client.data_nodes), 1)
+        self.assertGreaterEqual(len(self.client.data_nodes), 1)
 
     def test_get_data_nodes(self):
         self.client.connect()
         data_nodes = self.client.get_data_nodes()
         self.assertGreater(len(data_nodes), 0)
+
+    def test_update_data_node(self):
+        self.client.connect()
+        data_nodes = self.client.get_data_nodes()
+        data_node = list(data_nodes.values())[0]
+        data_node.name = "Temperature-XYZ"
+        self.assertTrue(self.client.update_data_node(data_node))
+
+    def test_delete_data_node(self):
+        self.client.connect()
+        data_node = DataNode("AboutToGetDeleted", ValueType.NUMBER, "Kg", True, "Test")
+        data_node = self.client.save_data_node(data_node)
+        self.assertTrue(self.client.delete_data_node(data_node))

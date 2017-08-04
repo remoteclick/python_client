@@ -73,8 +73,10 @@ class IOTClient:
         self.connected = False
 
     def get_data_nodes(self, limit=50, offset=0):
-        # TODO support params: limit, offset
-        response = requests.get(self.base_url + "datanodes", auth=OAuth2(self.token))
+        self.logger.debug("requesting data nodes.. (limit={0}, offset={1})".format(limit, offset))
+        response = requests.get(self.base_url + "datanodes",
+                                params={'limit': limit, 'offset': offset},
+                                auth=OAuth2(self.token))
         if response.status_code != 200:
             raise RequestError(self.make_error_message(response))
         raw_data_nodes = json.loads(response.content)
@@ -86,16 +88,54 @@ class IOTClient:
         return self.data_nodes
 
     def save_data_node(self, data_node):
-        # TODO check if datanode with same name and path already exists
+        if data_node.id and isinstance(data_node.id, int):
+            logging.debug("updating existing data node with id: {0}".format(data_node.id))
+            self.update_data_node(data_node)
+
+        self.get_data_nodes()
+        for existing_id, existing_data_node in self.data_nodes.items():
+            if existing_data_node.full_name() == data_node.full_name():
+                self.logger.warning("data node with same name and path already exists! not saving data node.")
+                return existing_data_node
+
+        self.logger.debug("saving data node..")
         response = requests.post(self.base_url + "datanodes",
                                  json.dumps(data_node.to_dict()),
                                  auth=OAuth2(self.token))
+
         if response.status_code != 201:
             raise RequestError(self.make_error_message(response))
         data_node = DataNode.from_dict(json.loads(response.content))
         self.data_nodes[data_node.id] = data_node
         self.logger.debug("successfully saved data node. received id: {0}".format(data_node.id))
         return data_node
+
+    def update_data_node(self, data_node):
+        if not data_node.id or not isinstance(data_node.id, int):
+            self.logger.error("cannot update non-existing data node! data node must be saved first.")
+            return False
+        self.logger.debug("updating data node with id: {0} ..".format(data_node.id))
+        response = requests.patch(self.base_url + "datanodes/" + str(data_node.id),
+                                  json.dumps(data_node.to_dict()),
+                                  auth=OAuth2(self.token))
+        if response.status_code != 202:
+            raise RequestError(self.make_error_message(response))
+        data_node = DataNode.from_dict(json.loads(response.content))
+        self.data_nodes[data_node.id] = data_node
+        self.logger.debug("successfully updated data node with id: {0}".format(data_node.id))
+        return data_node
+
+    def delete_data_node(self, data_node):
+        if not data_node.id or not isinstance(data_node.id, int):
+            self.logger.error("cannot delete non-existing data node!")
+            return False
+        self.logger.debug("deleting data node with id: {0} ..".format(data_node.id))
+        response = requests.delete(self.base_url + "datanodes/" + str(data_node.id),
+                                   auth=OAuth2(self.token))
+        if response.status_code != 200:
+            raise RequestError(self.make_error_message(response))
+        self.data_nodes.pop(data_node.id)
+        return True
 
     def make_error_message(self, response):
         return "api returned status code: {0} with message: {1}".format(response.status_code, response.content)
