@@ -1,8 +1,8 @@
 import json
 from unittest import TestCase
 
-from datanode import DataNode, ValueType
-from iot_client import IOTClient
+from iotclient import IOTClient
+from iotclient.datanode import DataNode, ValueType
 
 
 class TestIOTClient(TestCase):

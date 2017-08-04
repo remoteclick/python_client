@@ -1,12 +1,11 @@
 import json
+import logging
 import urllib.parse
 
 import requests
-import logging
-
 from requests.auth import AuthBase
 
-from datanode import DataNode
+from iotclient.datanode import DataNode
 
 
 class RequestError(Exception):
