@@ -105,3 +105,6 @@ class TestIOTClient(TestCase):
         self.assertEqual(original_data_node.id, fetched_data_node.id)
         self.assertEqual(original_data_node.path, fetched_data_node.path)
         self.assertEqual(original_data_node.name, fetched_data_node.name)
+
+    def test_update_data_node_value(self):
+        pass

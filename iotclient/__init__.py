@@ -205,7 +205,10 @@ class IOTClient:
         return values
 
     def get_current_data_node_value(self, data_node):
-        return self.get_data_node_values(data_node, limit=1, offset=0)[0]
+        try:
+            return self.get_data_node_values(data_node, limit=1, offset=0)[0]
+        except IndexError:
+            return None
 
     def update_data_node_value(self, data_node_value):
         # TODO implement
