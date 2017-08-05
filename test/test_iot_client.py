@@ -88,6 +88,15 @@ class TestIOTClient(TestCase):
         value = self.client.get_current_data_node_value(data_node)
         self.assertEqual(value.value, 34)
 
+    def test_update_data_node_value(self):
+        self.client.connect()
+        data_node = self.client.save_data_node(
+            DataNode("Temperature", ValueType.NUMBER, "°C", True, "Controller"))
+        data_node_value = self.client.save_data_node_value(data_node.new_value(34))
+        data_node_value.value = 35
+        updated_value = self.client.update_data_node_value(data_node_value)
+        self.assertEqual(updated_value.value, 35)
+
     def test_get_data_node_by_name(self):
         self.client.connect()
         original_data_node = self.client.save_data_node(
@@ -105,6 +114,3 @@ class TestIOTClient(TestCase):
         self.assertEqual(original_data_node.id, fetched_data_node.id)
         self.assertEqual(original_data_node.path, fetched_data_node.path)
         self.assertEqual(original_data_node.name, fetched_data_node.name)
-
-    def test_update_data_node_value(self):
-        pass
