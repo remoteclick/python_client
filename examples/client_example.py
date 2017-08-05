@@ -25,3 +25,14 @@ if __name__ == '__main__':
     temperature_values = client.get_data_node_values(temperature_node, limit=10)
     for temperature_value in temperature_values:
         print(temperature_value)
+
+    # save new data node which stores current status, does not store historic values and is read-only
+    status_node = client.save_data_node(
+        DataNode(name="Status", value_type=ValueType.STRING, unit="", keep_history=False, path="Controller",
+                 read_only=True))
+    # store first value
+    status_value = client.save_data_node_value(status_node.new_value(value="Ok"))
+
+    # change the value and update it
+    status_value.value = "Alarm"
+    client.update_data_node_value(status_value)
