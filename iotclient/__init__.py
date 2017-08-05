@@ -57,7 +57,7 @@ class IOTClient:
         )
         if response.status_code != 200:
             raise ConnectionError(self._make_error_message(response))
-        response_content = json.loads(response.content)
+        response_content = response.json()
         self.name = response_content["name"]
         self.device_type = response_content["deviceType"]
         self.manufacturer = response_content["manufacturer"]
@@ -80,7 +80,7 @@ class IOTClient:
                                 auth=OAuth2(self.token))
         if response.status_code != 200:
             raise RequestError(self._make_error_message(response))
-        raw_data_nodes = json.loads(response.content)
+        raw_data_nodes = response.json()
         self.data_nodes = {}
         for raw_data_node in raw_data_nodes:
             data_node = DataNode.from_dict(raw_data_node)
@@ -112,7 +112,7 @@ class IOTClient:
         if response.status_code != 200:
             raise RequestError(self._make_error_message(response))
 
-        return DataNode.from_dict(json.loads(response.content))
+        return DataNode.from_dict(response.json())
 
     def save_data_node(self, data_node):
         if data_node.id and isinstance(data_node.id, int):
@@ -132,7 +132,7 @@ class IOTClient:
 
         if response.status_code != 201:
             raise RequestError(self._make_error_message(response))
-        data_node = DataNode.from_dict(json.loads(response.content))
+        data_node = DataNode.from_dict(response.json())
         self.data_nodes[data_node.id] = data_node
         self.logger.debug("successfully saved data node. received id: {0}".format(data_node.id))
         return data_node
@@ -147,7 +147,7 @@ class IOTClient:
                                   auth=OAuth2(self.token))
         if response.status_code != 202:
             raise RequestError(self._make_error_message(response))
-        data_node = DataNode.from_dict(json.loads(response.content))
+        data_node = DataNode.from_dict(response.json())
         self.data_nodes[data_node.id] = data_node
         self.logger.debug("successfully updated data node with id: {0}".format(data_node.id))
         return data_node
@@ -179,7 +179,7 @@ class IOTClient:
 
         if response.status_code != 201:
             raise RequestError(self._make_error_message(response))
-        saved_data_node_value = DataNodeValue.from_dict(json.loads(response.content))
+        saved_data_node_value = DataNodeValue.from_dict(response.json())
         saved_data_node_value.data_node = data_node_value.data_node
         data_node_value.data_node.values[saved_data_node_value.id] = saved_data_node_value
 
@@ -198,7 +198,7 @@ class IOTClient:
         if response.status_code != 200:
             raise RequestError(self._make_error_message(response))
 
-        raw_values = json.loads(response.content)
+        raw_values = response.json()
         values = []
         for raw_value in raw_values:
             data_node_value = DataNodeValue.from_dict(raw_value)
@@ -217,7 +217,7 @@ class IOTClient:
         if response.status_code != 200:
             raise RequestError(self._make_error_message(response))
 
-        return DataNodeValue.from_dict(json.loads(response.content))
+        return DataNodeValue.from_dict(response.json())
 
     def update_data_node_value(self, data_node_value):
         if not data_node_value.data_node or not data_node_value.data_node or not isinstance(
@@ -231,7 +231,7 @@ class IOTClient:
         if response.status_code != 200:
             raise RequestError(self._make_error_message(response))
 
-        return DataNodeValue.from_dict(json.loads(response.content))
+        return DataNodeValue.from_dict(response.json())
 
     def _make_error_message(self, response):
         return "api returned status code: {0} with message: {1}".format(response.status_code, response.content)
