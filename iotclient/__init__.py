@@ -88,6 +88,32 @@ class IOTClient:
         self.logger.debug("successfully got {0} data nodes.".format(len(self.data_nodes)))
         return self.data_nodes
 
+    def get_data_node_by_name(self, path="", name=""):
+        if not path and not name:
+            self.logger.error("invalid parameters. name and path cannot both be empty!")
+            return None
+
+        self.get_data_nodes()
+        for identifier, data_node in self.data_nodes.items():
+            if data_node.name == name and data_node.path == path:
+                return data_node
+        return None
+
+    def get_data_node_by_id(self, data_node_id):
+        if not data_node_id:
+            self.logger.error("invalid parameters. id must not be empty!")
+            return None
+        for identifier, data_node in self.data_nodes.items():
+            if data_node_id == data_node.id:
+                return data_node
+
+        response = requests.get(self.base_url + "/datanodes/{0}".format(data_node_id), auth=OAuth2(self.token))
+
+        if response.status_code != 200:
+            raise RequestError(self.make_error_message(response))
+
+        return DataNode.from_dict(json.loads(response.content))
+
     def save_data_node(self, data_node):
         if data_node.id and isinstance(data_node.id, int):
             logging.debug("updating existing data node with id: {0}".format(data_node.id))
@@ -158,6 +184,28 @@ class IOTClient:
 
         self.logger.debug("successfully saved value of data-node. received id: {0}".format(saved_data_node_value.id))
         return saved_data_node_value
+
+    def get_data_node_values(self, data_node, limit=50, offset=0):
+        if not data_node.id or not isinstance(data_node.id, int):
+            self.logger.error("cannot request data node values for data node without id!")
+            return False
+
+        self.logger.debug("requesting values of data node..")
+        response = requests.get(self.base_url + "datanodes/{0}/values".format(data_node.id),
+                                params={'limit': limit, 'offset': offset},
+                                auth=OAuth2(self.token))
+        if response.status_code != 200:
+            raise RequestError(self.make_error_message(response))
+
+        raw_values = json.loads(response.content)
+        values = []
+        for raw_value in raw_values:
+            values.append(DataNodeValue.from_dict(raw_value))
+        self.logger.debug("successfully got {0} values for data node with id:{1}".format(len(values), data_node.id))
+        return values
+
+    def get_current_data_node_value(self, data_node):
+        return self.get_data_node_values(data_node, limit=1, offset=0)[0]
 
     def update_data_node_value(self, data_node_value):
         # TODO implement

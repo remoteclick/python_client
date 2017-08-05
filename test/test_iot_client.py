@@ -72,3 +72,36 @@ class TestIOTClient(TestCase):
         value = data_node.new_value(random.randint(15, 30))
         response_value = self.client.save_data_node_value(value)
         self.assertIsNotNone(response_value)
+
+    def test_get_data_node_values(self):
+        self.client.connect()
+        data_node = self.client.save_data_node(DataNode("Temperature", ValueType.NUMBER, "°C", True, "Controller"))
+        for index in range(15, 35):
+            self.client.save_data_node_value(data_node.new_value(index))
+        values = self.client.get_data_node_values(data_node)
+        self.assertGreaterEqual(len(values), 20)
+
+    def test_get_current_data_node_value(self):
+        self.client.connect()
+        data_node = self.client.save_data_node(DataNode("Temperature", ValueType.NUMBER, "°C", True, "Controller"))
+        self.client.save_data_node_value(data_node.new_value(34))
+        value = self.client.get_current_data_node_value(data_node)
+        self.assertEqual(value.value, 34)
+
+    def test_get_data_node_by_name(self):
+        self.client.connect()
+        original_data_node = self.client.save_data_node(
+            DataNode("Temperature", ValueType.NUMBER, "°C", True, "Controller"))
+        fetched_data_node = self.client.get_data_node_by_name(path="Controller", name="Temperature")
+        self.assertEqual(original_data_node.id, fetched_data_node.id)
+        self.assertEqual(original_data_node.path, fetched_data_node.path)
+        self.assertEqual(original_data_node.name, fetched_data_node.name)
+
+    def test_get_data_node_by_id(self):
+        self.client.connect()
+        original_data_node = self.client.save_data_node(
+            DataNode("Temperature", ValueType.NUMBER, "°C", True, "Controller"))
+        fetched_data_node = self.client.get_data_node_by_id(original_data_node.id)
+        self.assertEqual(original_data_node.id, fetched_data_node.id)
+        self.assertEqual(original_data_node.path, fetched_data_node.path)
+        self.assertEqual(original_data_node.name, fetched_data_node.name)
