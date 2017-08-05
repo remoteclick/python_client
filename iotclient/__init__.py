@@ -72,6 +72,14 @@ class IOTClient:
 
     def disconnect(self):
         self.connected = False
+        self.data_nodes.clear()
+        self.name = ""
+        self.manufacturer = ""
+        self.device_type = ""
+        self.description = ""
+        self.data_nodes = {}
+        self.id = ""
+        self.token = ""
 
     def get_data_nodes(self, limit=50, offset=0):
         self.logger.debug("requesting data nodes.. (limit={0}, offset={1})".format(limit, offset))
@@ -86,7 +94,7 @@ class IOTClient:
             data_node = DataNode.from_dict(raw_data_node)
             self.data_nodes[data_node.id] = data_node
         self.logger.debug("successfully got {0} data nodes.".format(len(self.data_nodes)))
-        return self.data_nodes
+        return self.data_nodes.values()
 
     def get_data_node_by_name(self, path="", name=""):
         if not path and not name:

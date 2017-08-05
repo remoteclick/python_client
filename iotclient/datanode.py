@@ -40,4 +40,4 @@ class DataNode:
         return DataNodeValue(value=value, timestamp=timestamp, data_node=self)
 
     def __str__(self):
-        return self.__dict__.__str__()
+        return self.to_dict().__str__()

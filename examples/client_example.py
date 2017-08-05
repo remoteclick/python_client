@@ -18,3 +18,10 @@ if __name__ == '__main__':
     value = temperature_node.new_value(23.5)
     # save the value
     client.save_data_node_value(value)
+
+    # get existing data node by specifying name and path
+    temperature_node = client.get_data_node_by_name(path="Controller", name="Temperature")
+    # fetch 10 newest values of data node
+    temperature_values = client.get_data_node_values(temperature_node, limit=10)
+    for temperature_value in temperature_values:
+        print(temperature_value)

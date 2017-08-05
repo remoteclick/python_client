@@ -11,6 +11,9 @@ class DataNodeValue:
             self.timestamp = datetime.datetime.now().isoformat()
         self.data_node = data_node
 
+    def timestamp(self):
+        return datetime.datetime.strptime(''.join(self.timestamp.rsplit(':', 1)), '%Y-%m-%dT%H:%M:%S%z')
+
     def from_dict(_dict):
         d = DataNodeValue()
         d.value = _dict.get("value", None)
@@ -25,4 +28,4 @@ class DataNodeValue:
         return _dict
 
     def __str__(self):
-        return self.__dict__.__str__()
+        return self.to_dict().__str__()
