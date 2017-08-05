@@ -36,3 +36,7 @@ if __name__ == '__main__':
     # change the value and update it
     status_value.value = "Alarm"
     client.update_data_node_value(status_value)
+
+    # delete data nodes
+    client.delete_data_node(temperature_node)
+    client.delete_data_node(status_node)
