@@ -9,8 +9,7 @@ logging.basicConfig(level=logging.DEBUG)
 
 if __name__ == '__main__':
     client = IOTClient()
-    # client.set_credentials("<your-device-id>", "<your-device-password>")
-    client.set_credentials("30632891-813d-11e7-a214-080027161686", "e1d3378253a5d37656b33bf63117e496")
+    client.set_credentials("<your-device-id>", "<your-device-password>")
     client.connect()
 
     temperature_node = client.save_data_node(
