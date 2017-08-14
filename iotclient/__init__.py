@@ -88,7 +88,7 @@ class IOTClient:
                                 auth=OAuth2(self.token))
         if response.status_code != 200:
             raise RequestError(self._make_error_message(response))
-        raw_data_nodes = response.json()
+        raw_data_nodes = response.json()['dataNodes']
         self.data_nodes = {}
         for raw_data_node in raw_data_nodes:
             data_node = DataNode.from_dict(raw_data_node)
@@ -206,7 +206,7 @@ class IOTClient:
         if response.status_code != 200:
             raise RequestError(self._make_error_message(response))
 
-        raw_values = response.json()
+        raw_values = response.json()['values']
         values = []
         for raw_value in raw_values:
             data_node_value = DataNodeValue.from_dict(raw_value)
