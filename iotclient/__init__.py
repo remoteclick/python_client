@@ -27,7 +27,7 @@ class IOTClient:
         self.logger = logging.getLogger("IOTClient")
         self.password = ""
         self.username = ""
-        self.base_url = "http://api.iotcloud.local/api/"
+        self.base_url = "https://api.remoteclick.ch/api/"
         self.connected = False
 
         self.name = ""
@@ -62,7 +62,7 @@ class IOTClient:
         self.device_type = response_content["deviceType"]
         self.manufacturer = response_content["manufacturer"]
         self.id = response_content["id"]
-        self.token = response_content["token"]
+        self.token = response_content["access_token"]
         self.connected = True
         self.logger.debug("successfully connected and authenticated.")
         return self.connected
