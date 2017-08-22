@@ -1,5 +1,7 @@
 import random
 
+import time
+
 from iotclient import IOTClient, DataNode
 from iotclient.value_type import ValueType
 
@@ -22,9 +24,8 @@ if __name__ == '__main__':
         value = temperature_node.new_value(random.randint(20, 30))
         # save the value
         client.save_data_node_value(value)
+        time.sleep(1)
 
-    # get existing data node by specifying name and path
-    temperature_node = client.get_data_node_by_name(path="Controller", name="Temperature")
     # fetch 10 newest values of data node
     temperature_values = client.get_data_node_values(temperature_node, limit=10)
     for temperature_value in temperature_values:
