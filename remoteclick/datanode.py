@@ -1,5 +1,5 @@
-from iotclient.datanode_value import DataNodeValue
-from iotclient.value_type import ValueType
+from remoteclick.datanode_value import DataNodeValue
+from remoteclick.value_type import ValueType
 
 
 class DataNode:

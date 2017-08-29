@@ -3,14 +3,14 @@ import logging
 import random
 from unittest import TestCase
 
-from iotclient import IOTClient
-from iotclient.datanode import DataNode
-from iotclient.value_type import ValueType
+from remoteclick import RemoteClickClient
+from remoteclick.datanode import DataNode
+from remoteclick.value_type import ValueType
 
 logging.basicConfig(level=logging.DEBUG)
 
 
-class TestIOTClient(TestCase):
+class TestRemoteClickClient(TestCase):
     @classmethod
     def setUpClass(cls):
         with open('config.json', 'r') as f:
@@ -20,7 +20,8 @@ class TestIOTClient(TestCase):
             cls.base_url = config["base_url"]
 
     def setUp(self):
-        self.client = IOTClient()
+        self.client = RemoteClickClient()
+        self.client.set_base_url(base_url=self.base_url)
         self.client.set_credentials(self.username, self.password)
 
     def test_set_credentials(self):
@@ -56,7 +57,7 @@ class TestIOTClient(TestCase):
     def test_update_data_node(self):
         self.client.connect()
         data_nodes = self.client.get_data_nodes()
-        data_node = list(data_nodes.values())[0]
+        data_node = list(data_nodes)[0]
         data_node.name = "Temperature-XYZ"
         self.assertTrue(self.client.update_data_node(data_node))
 

@@ -5,8 +5,8 @@ import urllib.parse
 import requests
 from requests.auth import AuthBase
 
-from iotclient.datanode import DataNode
-from iotclient.datanode_value import DataNodeValue
+from remoteclick.datanode import DataNode
+from remoteclick.datanode_value import DataNodeValue
 
 
 class RequestError(Exception):
@@ -22,9 +22,9 @@ class OAuth2(AuthBase):
         return r
 
 
-class IOTClient:
+class RemoteClickClient:
     def __init__(self):
-        self.logger = logging.getLogger("IOTClient")
+        self.logger = logging.getLogger("RemoteclickClient")
         self.password = ""
         self.username = ""
         self.base_url = "https://api.remoteclick.ch/api/"
@@ -94,7 +94,7 @@ class IOTClient:
             data_node = DataNode.from_dict(raw_data_node)
             self.data_nodes[data_node.id] = data_node
         self.logger.debug("successfully got {0} data nodes.".format(len(self.data_nodes)))
-        return self.data_nodes.values()
+        return list(self.data_nodes.values())
 
     def get_data_node_by_name(self, path="", name=""):
         if not path and not name:

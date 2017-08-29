@@ -1,12 +1,12 @@
-from iotclient import IOTClient, DataNode
-from iotclient.value_type import ValueType
+from remoteclick import RemoteClickClient, DataNode
+from remoteclick.value_type import ValueType
 
 import logging
 
 logging.basicConfig(level=logging.DEBUG)
 
 if __name__ == '__main__':
-    client = IOTClient()
+    client = RemoteClickClient()
     client.set_credentials("<your-device-id>", "<your-device-password>")
     client.connect()
     # create and save new data node (if data node already exists, existing one will be returned instead)

@@ -1,5 +1,5 @@
 {
     "username": "your_username",
     "password": "your_password",
-    "base_url": "http://api.iotcloud.local/api/"
+    "base_url": "https://api.remoteclick.ch/api/"
 }
