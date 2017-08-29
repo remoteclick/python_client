@@ -5,7 +5,7 @@ here = path.abspath(path.dirname(__file__))
 
 setup(
     name='remoteclick',
-    version='0.1',
+    version='0.1.1',
     description='Remoteclick REST API Client.',
     author='www.remoteclick.ch',
     author_email='info@remoteclick.ch',
@@ -18,6 +18,6 @@ setup(
         'Programming Language :: Python :: 3.6'
     ],
     keywords='remoteclick.ch remoteclick rest api client',
-    packages=find_packages(exclude=['tests']),
+    packages=find_packages(exclude=['test', 'examples']),
     install_requires=['requests'],
 )
