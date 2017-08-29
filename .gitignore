@@ -1,4 +1,5 @@
 
 .idea/
-
+dist/
+remoteclick.egg-info/
 test/config.json
