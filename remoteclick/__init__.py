@@ -81,6 +81,11 @@ class RemoteClickClient:
         self.id = ""
         self.token = ""
 
+    def update(self):
+        self.logger.debug("updating..")
+        self.disconnect()
+        self.connect()
+
     def get_data_nodes(self, limit=50, offset=0):
         self.logger.debug("requesting data nodes.. (limit={0}, offset={1})".format(limit, offset))
         response = requests.get(self.base_url + "datanodes",
