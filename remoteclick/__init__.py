@@ -130,7 +130,7 @@ class RemoteClickClient:
     def save_data_node(self, data_node):
         if data_node.id and isinstance(data_node.id, int):
             self.logger.debug("updating existing data node with id: {0}".format(data_node.id))
-            self.update_data_node(data_node)
+            return self.update_data_node(data_node)
 
         self.get_data_nodes()
         for existing_id, existing_data_node in self.data_nodes.items():
@@ -244,7 +244,9 @@ class RemoteClickClient:
         if response.status_code != 200:
             raise RequestError(self._make_error_message(response))
 
-        return DataNodeValue.from_dict(response.json())
+        updated_data_node_value = DataNodeValue.from_dict(response.json())
+        updated_data_node_value.data_node = data_node_value.data_node
+        return updated_data_node_value
 
     def _make_error_message(self, response):
         return "api returned status code: {0} with message: {1}".format(response.status_code, response.content)
