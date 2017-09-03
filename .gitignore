@@ -1,5 +1,6 @@
 
 .idea/
 dist/
+build/
 remoteclick.egg-info/
 test/config.json
