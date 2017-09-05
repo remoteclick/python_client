@@ -1,6 +1,6 @@
 # Remoteclick WebClient
 
-`pip3 install python`
+`pip3 install remoteclick`
 
 ```python
 from remoteclick import RemoteClickClient, DataNode
